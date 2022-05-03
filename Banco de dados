@@ -1,0 +1,316 @@
+-- LISTA 1
+-- QUESTÃO 01
+select T.NomeTreinador, T.EnderecoTreinador, T.TelefoneTreinador, C.NomeCao, M.DescMencao, CT.Data_Treino
+from treinador T, cao C, mencao M, cao_treinador CT
+where (CT.NumPedigre = C.NumPedigre)
+and (CT.CodTreinador = T.CodTreinador)
+and (CT.codMencao = M.codMencao)
+order by NomeTreinador
+
+-- QUESTÃO 02
+select T.NomeTreinador, C.NomeCao, M.DescMencao
+from treinador T, cao C, mencao M, cao_treinador CT
+where (CT.NumPedigre = C.NumPedigre)
+and (CT.CodTreinador = T.CodTreinador)
+and (CT.codMencao = M.codMencao)
+and (CT.codMencao = 4) 
+
+-- QUESTÃO 03
+select C.NomeCao, R.NomeRaca
+from cao C, raca R
+where (C.CodRaca = R.CodRaca)
+and (C.codRaca = 1)
+order by NomeCao
+
+-- QUESTÃO 04
+select distinct CL.NomeCliente, CL.EnderecoCliente, CL.TelefoneCliente
+from cliente CL, cao C, raca R
+where (C.CodRaca = R.CodRaca)
+and (CL.CodCliente = C.CodCliente)
+and (C.codRaca = 3)
+order by NomeCliente
+
+-- QUESTÃO 05
+select C.NomeCao, V.TipoVacina, CV.DataAplicacao
+from cao C, vacina V, cao_vacina CV
+where (C.NumPedigre = CV.NumPedigre)
+and (V.codVacina = CV.codVacina)
+order by nomecao
+
+-- QUESTÃO 06
+select C.NomeCao, R.NomeRaca, M.NomeCao as 'Mãe', RM.NomeRaca as 'Raça Mãr', P.NomeCao as 'Pai', RP.NomeRaca as 'Raça Pai'
+from cao C, cao P, cao M, raca R, raca RP, raca RM
+where(C.codpai = P.numpedigre)
+and (C.codmae = M.numpedigre)
+and (R.codraca = C.codRaca)
+and (RM.codRaca = P.codRaca)
+and (RP.codRaca = M.codRaca)
+
+-- QUESTÃO 07
+select C.NomeCao, CO.desccompeticao, CO.datacompeticao, CC.colocacao
+from cao C, cao_competicao CC, competicao CO
+where (C.numpedigre = CC.numpedigre)
+and (CO.codcompeticao = CC.codcompeticao)
+order by NomeCao, datacompeticao
+
+-- QUESTÃO 08
+select C.NomeCao, CL.nomecliente, CO.desccompeticao, CO.datacompeticao, CC.colocacao
+from cao C, cao_competicao CC, competicao CO, cliente CL
+where (C.numpedigre = CC.numpedigre)
+and (CO.codcompeticao = CC.codcompeticao)
+and (CL.codcliente = C.codcliente)
+order by NomeCao, desccompeticao, datacompeticao
+
+-- QUESTÃO 09
+select C.NomeCao, CL.nomecliente, R.nomeraca, R.pesomedio
+from cao C, cliente CL, raca R
+where (C.codraca = R.codraca)
+and (CL.codcliente = C.codcliente)
+order by NomeCao
+
+-- QUESTÃO 10
+select C.nomecao, Cl.nomecliente, M.NomeCao as 'Mãe', P.NomeCao as 'Pai', V.TipoVacina, CV.DataAplicacao
+from cao C, cao M, cao P, cliente CL, vacina V, cao_vacina CV
+where(C.codpai = P.numpedigre)
+and (C.codmae = M.numpedigre)
+and (C.NumPedigre = CV.NumPedigre)
+and (V.codVacina = CV.codVacina)
+and (Cl.codcliente = C.codcliente)
+order by nomecao, dataaplicacao
+
+-- LISTA 02
+-- HAVING
+-- QUESTÃO 01
+select CL.nomeCliente, count(C.numpedigre)
+from cliente CL, cao C
+where CL.codcliente = C.codcliente
+group by (Cl.nomeCLiente)
+having (count(c.numpedigre)) > 1
+
+-- QUESTÃO 02
+select P.nomecao, count(C.numpedigre)
+from cao P, cao C
+where P.numpedigre = C.codpai
+group by (P.nomecao)
+having (count(C.numpedigre)) > 1
+
+-- QUESTÃO 03
+select R.nomeraca, count(C.numPedigre)
+from Raca R, Cao C
+where R.codRaca = C.codRaca
+group by R.NomeRaca
+having (count(C.numPedigre)) > 3
+
+-- INNER JOIN
+-- QUESTÃO 01
+select R.NomeRaca, C.NomeCao
+from Raca R inner join Cao C
+on R.codraca = C.codRaca
+order by NomeRaca
+
+-- QUESTÃO 02
+select R.NomeRaca, count(C.NumPedigre)
+from Raca R inner join Cao C
+on R.codraca = C.codRaca
+group by R.NomeRaca
+
+-- QUESTÃO 03
+select R.NomeRaca, count(C.NumPedigre)
+from Raca R inner join Cao C
+on R.codraca = C.codRaca
+group by R.NomeRaca
+having (count(C.NumPedigre)) > 3
+
+-- QUESTÃO 04
+select C.NomeCao, count(CC.codCompeticao) as 'Competições'
+from cao C inner join cao_competicao CC
+on C.numpedigre = CC.numpedigre
+group by C.NomeCao
+order by count(CC.codCompeticao) desc
+
+-- QUESTÃO 05
+select C.NomeCao, count(CC.codCompeticao) as 'Competições'
+from cao C inner join cao_competicao CC
+on C.numpedigre = CC.numpedigre
+group by C.NomeCao
+having (count(CC.codCompeticao)) > 2
+order by count(CC.codCompeticao) desc
+
+-- QUESTÃO 06
+select T.NomeTreinador, count(CT.numPedigre)
+from Treinador T inner join Cao_Treinador CT
+on T.codTreinador = CT.CodTreinador
+group by T.NomeTreinador
+having (count(CT.NumPedigre)) > 2
+
+-- QUESTÃO 07
+select V.TipoVacina, count(CV.numPedigre)
+from Vacina V inner join Cao_Vacina CV
+on V.codVacina = CV.codVacina
+group by V.TipoVacina
+having (count(CV.NumPedigre)) > 3
+
+-- LEFT OUTER JOIN
+-- QUESTÃO 01
+select CL.NomeCliente, count(C.NumPedigre) as 'Quantidades de Cães'
+from Cliente CL left outer join Cao C
+on CL.codCLiente = C.CodCliente
+group by Cl.NomeCLiente
+order by Cl.NomeCliente
+
+-- QUESTÃO 02
+select R.NomeRaca, count(C.NumPedigre) as 'Quantidades de Cães'
+from Raca R left outer join Cao C
+on R.codRaca = C.CodRaca
+group by R.NomeRaca
+order by count(C.NumPedigre) desc
+
+-- QUESTÃO 03
+select T.NomeTreinador, count(CT.NumPedigre) as 'Quantidades de Cães'
+from Treinador T left outer join Cao_Treinador CT
+on T.codTreinador = CT.codTreinador
+group by T.NomeTreinador
+order by count(CT.NumPedigre) desc
+
+-- QUESTÃO 04
+select V.TipoVacina, count(CV.NumPedigre) as 'Quantidades de Cães'
+from Vacina V left outer join Cao_Vacina CV
+on V.codVacina = CV.codVacina
+group by V.TipoVacina
+order by count(CV.NumPedigre) desc
+
+-- CROSS JOIN
+-- QUESTÃO 01
+select CL.NomeCLiente, C.NomeCao
+from Cliente CL cross join Cao C
+
+-- QUESTÃO 02
+select C.NomeCao, R.NomeRaca
+from Raca R cross join Cao C
+
+-- QUESTÃO 03
+select C.NomeCao, P.NomeCao as 'Pai'
+from Cao C cross join Cao P
+
+select * from cao
+-- QUESTÃO 04
+select C.NomeCao, M.NomeCao as 'Mãe'
+from Cao C cross join Cao M
+
+-- LISTA 3
+-- QUESTÃO 01
+select P.nomecao, count(C.numpedigre)
+from cao P, cao C
+where P.numpedigre = C.codpai
+group by (P.nomecao)
+
+-- QUESTÃO 02
+select M.nomecao, count(C.numpedigre)
+from cao M, cao C
+where M.numpedigre = C.codmae
+group by (M.nomecao)
+
+-- QUESTÃO 03
+select CL.NomeCliente, count(C.NumPedigre)
+from Cliente CL, Cao C
+where CL.CodCliente = C.CodCLiente
+group by (CL.NomeCLiente)
+order by count(C.NumPedigre) desc
+
+-- QUESTÃO 04
+select CL.NomeCliente, C.NomeCao, R.ValorVenda
+from Cliente CL, Cao C, Raca R
+where CL.CodCliente = C.CodCLiente
+and R.CodRaca = C.CodRaca
+
+-- QUESTÃO 05
+select R.nomeraca, count(C.numPedigre)
+from Raca R, Cao C
+where R.codRaca = C.codRaca
+group by R.NomeRaca
+
+-- QUESTÃO 06
+select R.nomeraca, count(C.numPedigre)
+from Raca R, Cao C, Cao_Competicao CC
+where R.codRaca = C.codRaca
+and C.NumPedigre = CC.NumPedigre
+group by R.NomeRaca
+order by count(C.numPedigre) desc
+
+-- QUESTÃO 07
+select V.TipoVacina, count(C.numPedigre)
+from Vacina V, Cao C, Cao_Vacina CV
+where C.NumPedigre = CV.NumPedigre
+and V.CodVacina = CV.CodVacina
+group by V.TipoVacina
+order by count(C.numPedigre) desc
+
+-- QUESTÃO 08
+select T.NomeTreinador, count(CT.numPedigre)
+from Treinador T inner join Cao_Treinador CT
+on T.codTreinador = CT.CodTreinador
+group by T.NomeTreinador
+order by count(CT.numPedigre) desc
+
+-- QUESTÃO 09
+select T.NomeTreinador, M.DescMencao, count(CT.numPedigre)
+from Mencao M, Treinador T  inner join Cao_Treinador CT
+where T.CodTreinador = CT.CodTreinador
+and M.CodMencao = CT.CodMencao
+group by T.NomeTreinador, M.DescMencao
+
+-- QUESTÃO 10
+select C.NomeCao, count(CV.codVacina)
+from Cao C inner join Cao_Vacina CV
+on C.NumPedigre = CV.codVacina
+group by C.NomeCao
+order by count(CV.codVacina) desc
+
+-- QUESTÃO 11
+select M.DescMencao, count(C.codMencao)
+from Mencao M inner Join Cao_Treinador C
+where M.codMencao = C.codMencao
+group by M.DescMencao
+order by M.codMEncao desc
+
+-- QUESTÃO 12
+select R.NomeRaca, R.PesoMedio
+from Raca R
+
+-- QUESTÃO 13
+select CL.nomecliente, max(R.pesoMedio)
+from cao C, cliente CL, Raca R
+where (CL.codcliente = C.codCliente)
+and (C.codRaca = R.codRaca)
+group by Cl.NomeCliente
+group by Cl.NomeCliente
+
+-- QUESTÃO 14
+select Cl.NomeCliente, avg(R.PesoMedio)
+from cliente cl, raca r, cao c
+where (c.codraca = r.codraca)
+and (cl.codcliente = c.codcliente)
+group by Cl.NomeCliente
+order by Cl.NomeCliente
+
+-- QUESTÃO 15
+select CL.nomecliente, C.NomeCao, max(R.valorvenda)
+from cao C, cliente CL, Raca R
+where (CL.codcliente = C.codCliente)
+and (C.codRaca = R.codRaca)
+group by Cl.NomeCliente
+order by Cl.NomeCliente
+
+-- QUESTÃO 16
+select C.NomeCao, CO.DescCompeticao, min(CC.COlocacao)
+from cao C, competicao CO, Cao_competicao CC
+where (C.NumPedigre = CC.NumPedigre)
+and (CO.codCompeticao = CC.codCompeticao)
+group by C.NomeCao
+
+-- QUESTÃO 17
+select C.NomeCao, CO.DescCompeticao, max(CC.COlocacao)
+from cao C, competicao CO, Cao_competicao CC
+where (C.NumPedigre = CC.NumPedigre)
+and (CO.codCompeticao = CC.codCompeticao)
+group by C.NomeCao
